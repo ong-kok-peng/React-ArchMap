@@ -4,12 +4,12 @@ import CommandInput from './CommandInput';
 import CodeDisplay from './CodeDisplay';
 
 function App() {
-  const [nodesObj, setNodesObj] = useState({});
+  const [archObj, setArchObj] = useState({});
 
   return (
     <div>
-      <CommandInput nodesObjOut={setNodesObj} />
-      <CodeDisplay nodesObjIn={nodesObj} />
+      <CommandInput archObjOut={setArchObj} />
+      <CodeDisplay archObjIn={archObj} />
     </div>
   )
 }
