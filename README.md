@@ -4,9 +4,25 @@ A ReactJS web page to create node & edge architectures via user command input.
 
 ## User Commands
 
-1. <code>CREATE ARCH</code> (Creates a blank architecture, with no nodes and edges)
-2. <code>ADD {NODE/EDGE}; id=..., position_x=..., position_y=..., label=...; </code> (Adds node/edge(s). Second argument onwards are successive multiple nodes)
-3. <code>DELETE {NODE/EDGE}; id={id1}, {id2}, ... </code> (Delete node/edge(s). Second argument is a list of ID(s) to delete)
+1. ```CREATE ARCH```
+Creates a blank architecture, with no nodes and edges
+2.
+```
+ADD {NODE/EDGE};
+id=..., position_x=..., position_y=..., label=...
+```
+Adds node/edge(s). Second argument onwards are successive multiple nodes. Successive nodes can be separated in multiple lines as such:
+```
+id=id1, position_x=5, position_y=7, label=foo;
+id=id2, position_x=10, position_y=17, label=foo bar;
+id=id3, position_x=23, position_y=34, label=foo bar bar;
+```
+3. 
+```
+DELETE {NODE/EDGE};
+id={id1}, {id2}, ...
+```
+Delete node/edge(s). Second argument is a list of ID(s) to delete
 
 # Robustness
 
