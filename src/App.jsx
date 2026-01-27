@@ -1,15 +1,18 @@
 import { useState } from 'react'
-//import './App.css'
 import CommandInput from './CommandInput';
-import CodeDisplay from './CodeDisplay';
+import {CodeDisplay, MapDisplay} from './ArchDisplay';
+import './assets/css/App.css'
 
 function App() {
   const [archObj, setArchObj] = useState({});
 
   return (
-    <div>
+    <div className="app">
+      <div className='display'>
+        <MapDisplay archObjIn={archObj} />
+        <CodeDisplay archObjIn={archObj} />
+      </div>
       <CommandInput archObjOut={setArchObj} />
-      <CodeDisplay archObjIn={archObj} />
     </div>
   )
 }

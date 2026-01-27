@@ -1,10 +1,10 @@
 import { useState, useRef} from 'react'
-//import './UserInput.css'
+import './assets/css/CommandInput.css'
 
 function CommandInput({archObjOut}) {
   const cmdInput = useRef(null)
   const [commandFeedback, setCommandFeedback] = useState("");
-  const [nodesObj, modifyNodesObj] = useState({});
+  const [archObj, modifyArchObj] = useState({});
   //clean text regex removes new lines, carriage returns, and all common special chars except ';', '{' and '}'
   const cleanTextRegex = new RegExp("(\\n|\\!|\\@|\\#|\\$|\\%|\\^|\\&|\\*|\\<|\\>|\\(|\\))", 'gm');
 
@@ -21,6 +21,7 @@ function CommandInput({archObjOut}) {
     const obj = {};
 
     for (const attribute of argAttributes) {
+        //check if each attribute has a key value pair separated by ':'
         if (attribute.indexOf(':') == -1) { return {result: "failure", value: "Key lacks ':'"}; }
 
         const key = attribute.substring(0, attribute.indexOf(':'));
@@ -42,7 +43,7 @@ function CommandInput({archObjOut}) {
 
     //CREATE ARCH (architecture) command
     if (cleanedCmdString.startsWith("CREATE ARCH")) {
-        modifyNodesObj(prev => {
+        modifyArchObj(prev => {
             const overwriteObj = {nodes: [], edges: []};
 
             archObjOut(overwriteObj);
@@ -52,7 +53,7 @@ function CommandInput({archObjOut}) {
     }
     //ADD/DELETE/EDIT command; look for multiple arguments which specify node(s) and edge(s)
     else if (["ADD", "DELETE", "EDIT"].some(beginOfCmd => cleanedCmdString.startsWith(beginOfCmd))) {
-        if (Object.keys(nodesObj).length == 0) {
+        if (Object.keys(archObj).length == 0) {
             setCommandFeedback("Architecture isn't created yet!");
             return;
         }
@@ -79,7 +80,7 @@ function CommandInput({archObjOut}) {
                 }
             }
 
-            modifyNodesObj(prev => {
+            modifyArchObj(prev => {
                 const overwriteNodes = prev.nodes.concat(newNodes);
                 const overwriteObj = {...prev, nodes: overwriteNodes};
 
@@ -104,15 +105,55 @@ function CommandInput({archObjOut}) {
                     feedbackMessage += `Cannot add edge because ${parseResult.value}.\n`;
                 }
             }
+
+            modifyArchObj(prev => {
+                const overwriteEdges = prev.edges.concat(newEdges);
+                const overwriteObj = {...prev, edges: overwriteEdges};
+
+                archObjOut(overwriteObj);
+                setCommandFeedback(feedbackMessage); 
+                return overwriteObj;
+            });
         }
         //DELETE commands
-        else if (cleanedCmdString.startsWith("DELETE NODE")) {
-            //parse only one arg, which contains all the node ids
+        else if (cleanedCmdString.startsWith("DELETE")) {
+            //parse only one arg, which contains all the ids of nodes or edges
             if (cmdArgs.length != 1) { setCommandFeedback("DELETE should take in only one argument."); return; }
 
-        }
-        else if (cleanedCmdString.startsWith("DELETE EDGE")) {
+            //check if arg syntax has id key and a list of values pair
+            if (!cmdArgs[0].startsWith("id:")) { setCommandFeedback("DELETE should specify list of IDs."); return; }
 
+            const idValueStr = cmdArgs[0].substring(cmdArgs[0].indexOf(':')+1);
+            const idValues = idValueStr.split(',').map(arg => arg.trim()).filter(Boolean);
+
+            if (idValues.length == 0) { setCommandFeedback("DELETE has no IDs specified."); return; }
+            //create a modified copy of exisitng nodes and edges
+            let modifiedNodes = archObj.nodes; let modifiedEdges = archObj.edges;
+
+            for (const id of idValues) {
+                //find each id in the nodes and edges array. 
+                if (archObj.nodes.some(node => node.id == id)) {
+                    modifiedNodes = modifiedNodes.filter(node => node.id != id);
+                    feedbackMessage += `ID ${id} is deleted in nodes.\n`;
+                }
+                else if (archObj.edges.some(edge => edge.id == id)) {
+                    modifiedEdges = modifiedEdges.filter(edge => edge.id != id);
+                    feedbackMessage += `ID ${id} is deleted in edges.\n`;
+                }
+                else { feedbackMessage += `ID ${id} is not found in existing nodes and edges.\n`; }
+            }
+
+            modifyArchObj(prev => {
+                let overwriteObj = null; 
+
+                if (cleanedCmdString.startsWith("DELETE NODE")) { overwriteObj = {...prev, nodes: modifiedNodes}; }
+                else if (cleanedCmdString.startsWith("DELETE EDGE")) { overwriteObj = {...prev, edges: modifiedEdges}; }
+                else { setCommandFeedback("DELETE has neither node nor edge defined."); return prev; }
+                
+                archObjOut(overwriteObj);
+                setCommandFeedback(feedbackMessage); 
+                return overwriteObj;
+            });
         }
     }
     //Empty command
@@ -128,10 +169,12 @@ function CommandInput({archObjOut}) {
   }
 
   return (
-    <div>
-      <textarea defaultValue="" ref={cmdInput}></textarea>
-      <button onClick={processCmd}>Send command</button>
-      <label>{commandFeedback}</label>
+    <div className="commandInput">
+      <div className='commandField'>
+        <textarea defaultValue="" ref={cmdInput} placeholder="Type a commnd i.e CREATE ARCH..., ADD/DELETE NODE..."></textarea>
+        <button onClick={processCmd}>Send command</button>
+      </div>
+      <div className='commandFeedback'>{commandFeedback}</div>
     </div>
   )
 }

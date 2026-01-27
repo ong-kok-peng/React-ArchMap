@@ -1,0 +1,20 @@
+.commandInput {
+	border-top: 2px black solid; 
+    padding: 10px;
+}
+.commandField {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between
+}
+.commandField textarea {
+    width: 85%;
+    height: 40px;
+    resize: none;   
+}
+.commandField button {
+    width: 12%
+}
+.commandFeedback {
+    padding: 10px 0;
+}

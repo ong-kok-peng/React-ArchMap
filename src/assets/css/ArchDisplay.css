@@ -1,0 +1,13 @@
+.mapDisplay {
+	width: 60%;
+	background: white;
+}
+.mapDisplay div { 
+	border:none !important; 
+	padding: 0 !important 
+}
+.codeDisplay {
+	width: 33%;
+    overflow: auto;
+	background: black; color: white;
+}
