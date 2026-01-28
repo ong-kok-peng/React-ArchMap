@@ -1,6 +1,6 @@
 .commandInput {
 	border-top: 2px black solid; 
-    padding: 10px;
+    padding: 25px;
 }
 .commandField {
     display: flex;
@@ -9,11 +9,12 @@
 }
 .commandField textarea {
     width: 85%;
-    height: 40px;
+    height: 55px;
     resize: none;   
 }
 .commandField button {
-    width: 12%
+    width: 12%;
+    font-size: 15pt;
 }
 .commandFeedback {
     padding: 10px 0;

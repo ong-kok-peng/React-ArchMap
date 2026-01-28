@@ -16,19 +16,19 @@ function CommandInput({archObjOut}) {
     //check if object to be created contains all attributes inside objAttributes
     const argAttributes = arg.split(',').map(arg => arg.trim()).filter(Boolean);
 
-    if (argAttributes.length != objAttributes.length) { return {result: "failure", value: "Insufficient number of keys"}; }
+    if (argAttributes.length != objAttributes.length) { return {result: "failure", value: "wrong quantity of keys"}; }
 
     const obj = {};
 
     for (const attribute of argAttributes) {
         //check if each attribute has a key value pair separated by ':'
-        if (attribute.indexOf(':') == -1) { return {result: "failure", value: "Key lacks ':'"}; }
+        if (attribute.indexOf(':') == -1) { return {result: "failure", value: "key lacks ':'"}; }
 
-        const key = attribute.substring(0, attribute.indexOf(':'));
-        let value = attribute.substring(attribute.indexOf(':')+1);
+        const key = attribute.substring(0, attribute.indexOf(':')).trim();
+        let value = attribute.substring(attribute.indexOf(':')+1).trim();
 
         //check if key to create fulfils the objAttributes
-        if (!objAttributes.includes(key)) { return {result: "failure", value: "Invalid key"}; } 
+        if (!objAttributes.includes(key)) { return {result: "failure", value: "invalid key"}; } 
         
         if (!Number.isNaN(parseInt(value))) { value = parseInt(value); } //convert numerical value to int type
         obj[key] = value;
@@ -72,8 +72,14 @@ function CommandInput({archObjOut}) {
             for (const arg of cmdArgs) {
                 const parseResult = createObjFromArg(arg, nodeAttributes);
                 if (parseResult.result == "success") {  
-                    newNodes.push(parseResult.value);  
-                    feedbackMessage += `Node ID ${parseResult.value.id} added!\n`;
+                    //check if node positions are integers
+                    if (Number.isNaN(parseInt(parseResult.value.position_x)) || Number.isNaN(parseInt(parseResult.value.position_x))) {
+                        feedbackMessage += `Cannot add node because position values are not integers\n`
+                    }
+                    else {
+                        newNodes.push(parseResult.value);  
+                        feedbackMessage += `Node ID ${parseResult.value.id} added!\n`;
+                    }
                 }
                 else if (parseResult.result == "failure") { 
                     feedbackMessage += `Cannot add node because ${parseResult.value}.\n`;
@@ -93,13 +99,22 @@ function CommandInput({archObjOut}) {
         else if (cleanedCmdString.startsWith("ADD EDGE")) {
             let edgeAttributes = ["id", "source", "destination"];
             let newEdges = [];
+            const exisitingNodes = archObj.nodes;
 
             for (const arg of cmdArgs) {
                 const parseResult = createObjFromArg(arg, edgeAttributes);
                 if (parseResult.result == "success") {  
                     //check if the edge object source and destination exists in all the nodes prev added
-                    //newEdges.push(parseResult.value);  
-                    //feedbackMessage += `Edge ID ${parseResult.value.id} added!\n`;
+                    const sourceExists = exisitingNodes.some(node => node.id == parseResult.value.source);
+                    const destinationExists = exisitingNodes.some(node => node.id == parseResult.value.destination);
+
+                    if (sourceExists && destinationExists) {
+                        newEdges.push(parseResult.value);  
+                        feedbackMessage += `Edge ID ${parseResult.value.id} added!\n`;
+                    }
+                    else {
+                        feedbackMessage += `Cannot add edge because source or/and destination doesn't exist in nodes\n`;
+                    }
                 }
                 else if (parseResult.result == "failure") { 
                     feedbackMessage += `Cannot add edge because ${parseResult.value}.\n`;
@@ -123,7 +138,7 @@ function CommandInput({archObjOut}) {
             //check if arg syntax has id key and a list of values pair
             if (!cmdArgs[0].startsWith("id:")) { setCommandFeedback("DELETE should specify list of IDs."); return; }
 
-            const idValueStr = cmdArgs[0].substring(cmdArgs[0].indexOf(':')+1);
+            const idValueStr = cmdArgs[0].substring(cmdArgs[0].indexOf(':')+1).trim();
             const idValues = idValueStr.split(',').map(arg => arg.trim()).filter(Boolean);
 
             if (idValues.length == 0) { setCommandFeedback("DELETE has no IDs specified."); return; }

@@ -29,7 +29,7 @@ export function CodeDisplay({archObjIn}) {
         {`\n  edges: [`}
         {archObjIn.edges.map((edge, i) => (
             <span key={edge.id ?? i}>
-            {`\n    { id: "${edge.id}" }`}
+            {`\n    { id: "${edge.id}", source: "${edge.source}", destination: "${edge.destination}" }`}
             </span>
         ))}
         {`\n  ]`}
@@ -40,9 +40,22 @@ export function CodeDisplay({archObjIn}) {
 }
 
 export function MapDisplay({archObjIn}) {
+    const nodes = (archObjIn.nodes ?? []).map((node) => ({
+        id: node.id,
+        position: { x: node.position_x, y: node.position_y },
+        data: { label: node.label },
+    }));
+
+    const edges = (archObjIn.edges ?? []).map((edge) => ({
+        id: edge.id,
+        source: edge.source,
+        target: edge.destination,
+        // data: { label: edge.label } // optional
+    }));
+
     return (
     <div className="mapDisplay">
-      <ReactFlow>
+      <ReactFlow nodes={nodes} edges={edges} fitView>>
         <Background />
         <Controls />
       </ReactFlow>

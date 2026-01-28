@@ -3,13 +3,12 @@
   height: 100%; 
   margin:auto;
   padding: 0 32px; 
-  background: green;
   display: flex; 
   flex-direction: column;
   font-family: sans-serif;
 }
 .display{
-	margin:10px 0;
+	margin:25px 0;
   display: flex; 
   flex-direction: row;
   justify-content:space-between;
