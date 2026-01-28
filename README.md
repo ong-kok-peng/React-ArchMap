@@ -24,14 +24,24 @@ id={id1}, {id2}, ...
 ```
 Delete node/edge(s). Second argument is a list of ID(s) to delete
 
-# Robustness
+## Robustness
 
 Users cannot enter any of the following
 - Invalid/garbage commands
 - Malicious (XSS syntax) commands
 - Blank input
 
-# Todo
+## How to run
+
+1. Ensure node.js, and create-vite is installed globally
+2. Download zip package of this GitHub repositiory, and unzip it.
+3. Open CMD/terminal, CD to the unzip directory
+4. Run command ```npm install```
+5. Run comnmand ```npm run dev```
+6. If missing dependencies error occur, install them i.e. @xyflow/react as follows: ```npm install @xyflow/react``` then re-run app
+7. App is running!
+
+## Todo
 
 - Implement EDIT function
 - Auto-generate node and edge ID when adding
