@@ -2,6 +2,8 @@
 
 A ReactJS web page to create node & edge architectures via user command input.
 
+<img width="1754" height="744" alt="archMapUI" src="https://github.com/user-attachments/assets/c6d8324d-ee11-4f1c-ba09-43b4d243132b" />
+
 ## User Commands
 
 1. ```CREATE ARCH```
