@@ -43,8 +43,9 @@ Users cannot enter any of the following
 
 ## Todo
 
+- Preventing duplicate IDs in adding nodes & edges
 - Implement EDIT function
 - Auto-generate node and edge ID when adding
 - Syntax coloring of code view
 - Command history
-- More Flow diagram interaction
+- More Flow diagram interaction and visualizations
