@@ -21,11 +21,11 @@ function CommandInput({archObjOut}) {
     const obj = {};
 
     for (const attribute of argAttributes) {
-        //check if each attribute has a key value pair separated by ':'
-        if (attribute.indexOf(':') == -1) { return {result: "failure", value: "key lacks ':'"}; }
+        //check if each attribute has a key value pair separated by '='
+        if (attribute.indexOf('=') == -1) { return {result: "failure", value: "key lacks '='"}; }
 
-        const key = attribute.substring(0, attribute.indexOf(':')).trim();
-        let value = attribute.substring(attribute.indexOf(':')+1).trim();
+        const key = attribute.substring(0, attribute.indexOf('=')).trim();
+        let value = attribute.substring(attribute.indexOf('=')+1).trim();
 
         //check if key to create fulfils the objAttributes
         if (!objAttributes.includes(key)) { return {result: "failure", value: "invalid key"}; } 
